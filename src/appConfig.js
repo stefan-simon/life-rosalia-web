@@ -1,0 +1,1 @@
+export const apiUrl = 'https://rosalia.gissquad.com/api'
