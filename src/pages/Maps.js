@@ -6,13 +6,17 @@ import { OSM, Vector } from 'ol/source';
 import { fromLonLat } from 'ol/proj';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import { Point } from 'ol/geom';
+import { Select } from 'ol/interaction'; // Import the Select interaction
 
 import { apiUrl } from '../appConfig';
 
 import 'ol/ol.css';
+import SightingDetails from '../Components/SightingDetails';
 
 const Maps = () => {
   const [sightings, setSightings] = useState([]);
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   useEffect(() => {
     const fetchSightings = async () => {
@@ -43,6 +47,7 @@ const Maps = () => {
           geometry: new Point(
             fromLonLat([parseFloat(sighting.longitude), parseFloat(sighting.latitude)])
           ),
+          properties: { sighting }, // Attach the sighting data to the feature as a property
         });
 
         feature.setStyle(
@@ -65,12 +70,35 @@ const Maps = () => {
 
     map.addLayer(vectorLayer);
 
+    // Add the Select interaction to detect feature selection
+    const selectInteraction = new Select();
+    map.addInteraction(selectInteraction);
+
+    selectInteraction.on('select', (event) => {
+      const selected = event.selected[0];
+      if (selected) {
+        const props = selected.getProperties();
+        const selectedRecord = props?.properties?.sighting;
+        setSelectedFeature(selectedRecord);
+        setShowDetailsModal(true);// Set the selected feature data as state
+      } else {
+        console.log('No feature selected');
+        setSelectedFeature(null);
+        setShowDetailsModal(false);
+      }
+    });
+
     return () => {
       map.setTarget(undefined);
     };
   }, [sightings]);
 
-  return <div id="map-container" style={{ height: `calc(100vh - 64px - 24px)` }}></div>;
+  return (
+    <div>
+      <div id="map-container" style={{ height: `calc(100vh - 64px - 24px)` }}></div>
+      <SightingDetails record={selectedFeature} visible={showDetailsModal} onClose={() => setSelectedFeature(null)} />
+    </div>
+  );
 };
 
 export default Maps;
