@@ -139,7 +139,7 @@ function Sightings() {
 
     try {
       // Call the API to update the verified status of the sighting
-      const response = await axios.patch(apiUrl + `/${id}/verified`, { verified });
+      const response = await axios.patch(apiUrl + `/sightings/${id}/verified`, { verified });
       const updatedSighting = response.data;
 
       // Update the sightings array in state with the updated sighting
