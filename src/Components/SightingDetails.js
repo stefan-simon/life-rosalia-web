@@ -6,6 +6,9 @@ import "./SightingDetails.css";
 const { Title, Text } = Typography;
 
 function SightingDetails({ record, visible, onClose }) {
+  if (!record) {
+    return null;
+  }
   const pictures = [];
   if (record.picture1) {
     pictures.push(apiUrl + '/image/' + record.picture1);
