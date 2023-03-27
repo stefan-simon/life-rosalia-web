@@ -13,8 +13,12 @@ RUN npm install
 # copy app source code to work directory
 COPY . .
 
+RUN npm run build 
+
+RUN npm install -g  serve
+
 # expose port 3000
 EXPOSE 3000
 
 # start the app
-CMD [ "npm", "start" ]
+CMD [ "serve", "-l", "3000", "-s", "build" ]
