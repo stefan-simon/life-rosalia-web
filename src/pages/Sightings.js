@@ -136,10 +136,14 @@ function Sightings() {
   const handleVerify = async (record) => {
     const id = record.id;
     const verified = !record.verified;
+    const token = localStorage.getItem("rosalia-web-token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
 
     try {
       // Call the API to update the verified status of the sighting
-      const response = await axios.patch(apiUrl + `/sightings/${id}/verified`, { verified });
+      const response = await axios.patch(apiUrl + `/sightings/${id}/verified`, { verified }, config);
       const updatedSighting = response.data;
 
       // Update the sightings array in state with the updated sighting
