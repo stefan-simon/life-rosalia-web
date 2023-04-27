@@ -1,1 +1,1 @@
-export const apiUrl = 'https://rosalia.gissquad.com/api'
+export const apiUrl = 'https://aplicatie.liferosalia.ro/api';
