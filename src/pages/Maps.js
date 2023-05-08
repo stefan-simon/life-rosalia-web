@@ -135,6 +135,10 @@ const Maps = () => {
       }),
     });
 
+    // zoom to the extent of the vector layer features
+    const extent = featuresSource.getExtent();
+    const polygon = fromExtent(extent);
+    map.getView().fit(polygon, { padding: [50, 50, 50, 50] });
 
     if (useCluster) {
       // create a cluster source to group features that are close to each other
@@ -160,10 +164,6 @@ const Maps = () => {
     });
 
     map.addLayer(vectorLayer);
-    // zoom to the extent of the vector layer features
-    const extent = vectorSource.getExtent();
-    const polygon = fromExtent(extent);
-    map.getView().fit(polygon, { padding: [50, 50, 50, 50] });
 
   }, [filteredSightings, useCluster, map]);
 
