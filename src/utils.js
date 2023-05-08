@@ -29,3 +29,28 @@ export const login = async (username, password) => {
     return null;
   }
 }
+
+export const speciesIds = [
+  { label: "Rosalia alpina", value: "rosalia-alpina" },
+  { label: "Osmoderma eremita", value: "osmoderma-eremita" },
+  { label: "Morimus funereus", value: "morimus-funereus" },
+  { label: "Lucanus cervus", value: "lucanus-cervus" },
+  { label: "Cerambyx cerdo", value: "cerambyx-cerdo" },
+];
+
+export const speciesNames = {
+  "rosalia-alpina": "Rosalia alpina",
+  "osmoderma-eremita": "Osmoderma eremita",
+  "morimus-funereus": "Morimus funereus",
+  "lucanus-cervus": "Lucanus cervus",
+  "cerambyx-cerdo": "Cerambyx cerdo"
+};
+
+const speciesColors = {
+  'rosalia-alpina': '#40E0D0',
+  'osmoderma-eremita': '#480000',
+  'morimus-funereus': '#5a436a',
+  'lucanus-cervus': '#820000',
+  'cerambyx-cerdo': '#02606c',
+};
+export const getSpeciesColor = (species) => speciesColors[species] || '#cccccc';

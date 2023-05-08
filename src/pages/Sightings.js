@@ -1,137 +1,84 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Checkbox, DatePicker } from "antd";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import moment from 'moment';
 
 import "./Sightings.css";
-import SightingDetails from "../Components/SightingDetails";
 import { apiUrl } from "../appConfig";
+import SightingsList from "../Components/SightingsList";
+import SightingDetails from "../Components/SightingDetails";
+import FilterPanel from "../Components/FiltrePanel";
+import { speciesIds } from "../utils";
+import { Button, message } from "antd";
 
 function Sightings() {
+  const navigate = useNavigate();
+
   const [sightings, setSightings] = useState([]);
+  const [usersList, setUsersList] = useState([]);
+
+  const [filteredSightings, setFilteredSightings] = useState([]);
+
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
 
-
-  const speciesOptions = [
-    { label: "Rosalia alpina", value: "rosalia-alpina" },
-    { label: "Osmoderma eremita", value: "osmoderma-eremita" },
-    { label: "Morimus funereus", value: "morimus-funereus" },
-    { label: "Lucanus cervus", value: "lucanus-cervus" },
-    { label: "Cerambyx cerdo", value: "cerambyx-cerdo" },
-  ];
-
-  const columns = [
-    {
-      title: "Specie",
-      dataIndex: "species",
-      key: "species",
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
-          <Checkbox.Group
-            options={speciesOptions}
-            value={selectedKeys}
-            onChange={(values) => setSelectedKeys(values)}
-          />
-          <div style={{ marginTop: 8 }}>
-            <Button
-              type="primary"
-              size="small"
-              onClick={() => {
-                confirm();
-              }}
-            >
-              OK
-            </Button>
-            <Button size="small" onClick={() => clearFilters()}>
-              Reset
-            </Button>
-          </div>
-        </div>
-      ),
-      onFilter: (value, record) => record.species.includes(value),
-    },
-    {
-      title: "Data observatiei",
-      dataIndex: "sighting_date",
-      key: "sighting_date",
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <DatePicker.RangePicker
-            value={selectedKeys[0]}
-            onChange={(date) =>
-              setSelectedKeys(date ? [date] : [])
-            }
-            onOk={() => confirm()}
-            placeholder={["Start date", "End date"]}
-          />
-          <Button
-            type="primary"
-            onClick={() => {
-              setSelectedKeys([]);
-              clearFilters();
-            }}
-            style={{ marginTop: 8, marginRight: 8 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            style={{ marginTop: 8 }}
-          >
-            Filter
-          </Button>
-        </div>
-      ),
-      onFilter: (value, record) => {
-        const [start, end] = value;
-        const date = moment(record.sighting_date);
-        return date.isSameOrAfter(start, "day") && date.isSameOrBefore(end, "day");
-      },
-      sorter: (a, b) => {
-        return moment(a.sighting_date) - moment(b.sighting_date);
-      },
-    },
-    {
-      title: "Nota",
-      dataIndex: "notes",
-      key: "notes",
-    },
-    {
-      title: "Validat",
-      dataIndex: "verified",
-      key: "verified",
-      render: (verified) => (verified ? "Yes" : "No")
-    },
-    {
-      title: "Actiuni",
-      key: "actions",
-      render: (text, record) => (
-        <>
-          <Button onClick={() => handleView(record)}>Detalii</Button>
-          &nbsp;
-          <Button onClick={() => handleVerify(record)}>{record.verified ? 'Invalideaza' : 'Valideaza'}</Button>
-        </>
-      ),
-    },
-  ];
-
+  // fetch the sightings and the users list
   useEffect(() => {
+    const fetchUsers = async () => {
+      const token = localStorage.getItem("rosalia-web-token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      const response = await axios.get(apiUrl + '/users', config);
+      setUsersList(response.data.map((user) => {
+        return {
+          value: user.id,
+          label: user.name
+        }
+      }));
+    };
+
+    fetchUsers();
+
     axios
       .get(apiUrl + "/sightings")
       .then((response) => {
         setSightings(response.data);
+        setFilteredSightings(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  const handleApplyFilters = (selectedSpecies, selectedUsers, verified, intervalDate) => {
+    let filteredSightings = sightings;
+
+    if (selectedSpecies.length > 0) {
+      filteredSightings = filteredSightings.filter(sighting => selectedSpecies.includes(sighting.species));
+    }
+
+    if (selectedUsers.length > 0) {
+      filteredSightings = filteredSightings.filter(sighting => selectedUsers.includes(sighting.user_id));
+    }
+
+    if (verified) {
+      filteredSightings = filteredSightings.filter(sighting => sighting.verified === true);
+    }
+
+    if (intervalDate.length === 2) {
+      filteredSightings = filteredSightings.filter(sighting => {
+        const sightingDate = new Date(sighting.date);
+        return sightingDate >= intervalDate[0] && sightingDate <= intervalDate[1];
+      });
+    }
+
+    setFilteredSightings(filteredSightings);
+  };
+
+  const handleResetFilters = () => {
+    setFilteredSightings(sightings);
+  };
+
 
   const handleVerify = async (record) => {
     const id = record.id;
@@ -154,10 +101,19 @@ function Sightings() {
           return sighting;
         }
       }));
+
+      // Display success message
+      message.success(`Inregistrarea a fost ${verified ? 'validata' : 'invalidata'}.`);
+
     } catch (error) {
       console.error(error);
       // Display an error message to the user
+      message.error(`Erare la ${verified ? 'validarea' : 'invalidarea'} inregistrarii.`);
     }
+  };
+
+  const handleDisplayInMap = (selectedSpecies, selectedUsers, verified, intervalDate) => {
+    navigate("/maps", { state: { filteredSightings } });
   };
 
 
@@ -169,14 +125,21 @@ function Sightings() {
 
   return (
     <div>
-      <Table columns={columns} dataSource={sightings} />
-      {selectedRecord && (
-        <SightingDetails
-          record={selectedRecord}
-          visible={detailsModalVisible}
-          onClose={() => setDetailsModalVisible(false)}
+      <div style={{ marginBottom: 16 }}>
+        <FilterPanel
+          speciesOptions={speciesIds}
+          userOptions={usersList}
+          onApplyFilters={handleApplyFilters}
+          onResetFilters={handleResetFilters}
         />
-      )}
+      </div>
+      <div style={{ marginBottom: 16, textAlign: 'left' }}>
+        <Button type="primary" onClick={handleDisplayInMap}>
+          Afiseaza observatiile in harta
+        </Button>
+      </div>
+      <SightingsList sightings={filteredSightings} onDetailsClick={handleView} onValidateClick={handleVerify} />
+      <SightingDetails record={selectedRecord} visible={detailsModalVisible} onClose={() => setDetailsModalVisible(false)} />
     </div>
   );
 }

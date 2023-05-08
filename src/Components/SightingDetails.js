@@ -1,14 +1,18 @@
 import React from "react";
-import { Modal, Typography, Carousel } from "antd";
+import { Modal, Carousel } from "antd";
 import { apiUrl } from "../appConfig";
 import "./SightingDetails.css";
-
-const { Title, Text } = Typography;
+import { UserOutlined, InfoCircleOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Checkbox } from "antd";
+import { speciesNames } from "../utils";
+import moment from "moment";
 
 function SightingDetails({ record, visible, onClose }) {
   if (!record) {
     return null;
   }
+  const date = moment.utc(record.sighting_date);
+  const formattedDate = date.local().format("DD/MM/YYYY h:mm A")
   const pictures = [];
   if (record.picture1) {
     pictures.push(apiUrl + '/image/' + record.picture1);
@@ -22,31 +26,24 @@ function SightingDetails({ record, visible, onClose }) {
 
   return (
     <Modal
-      title="Sighting Details"
-      visible={visible}
+      title="Detalii observație"
+      open={visible}
       onCancel={onClose}
       footer={null}
       className="custom-modal"
     >
       <div className="sighting-details-container">
         <div className="sighting-details-info">
-          <Title level={4}>Species:</Title>
-          <Text>{record.species}</Text>
-          <br />
-          <br />
-          <Title level={4}>Sighting Date:</Title>
-          <Text>{record.sighting_date}</Text>
-          <br />
-          <br />
-          <Title level={4}>Notes:</Title>
-          <Text>{record.notes}</Text>
-          <br />
-          <br />
+          <UserOutlined /> {record.user_name} <br />
+          {record.verified ? <Checkbox checked disabled /> : <Checkbox disabled />}  Verificat <br />
+          <InfoCircleOutlined /> {speciesNames[record.species]} <br />
+          <CalendarOutlined /> {formattedDate} <br />
+          {record.notes}
         </div>
         <div className="sighting-details-images">
           <Carousel className="sighting-details-carousel">
             {pictures.map((image, index) => (
-              <div key={index}>
+              <div key={index} id={`containter-${index}`} className="image-container">
                 <img
                   src={image}
                   alt=""
