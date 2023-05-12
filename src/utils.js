@@ -18,6 +18,16 @@ export const isAuthenticated = () => {
   return true;
 }
 
+export const isAdmin = () => {
+  const token = localStorage.getItem("rosalia-web-token");
+  if (!token) {
+    return false;
+  }
+
+  const decodedToken = jwt_decode(token);
+  return decodedToken.role === "admin";
+}
+
 export const login = async (username, password) => {
   try {
     const response = await axios.post(`${apiUrl}/login`, { username, password });

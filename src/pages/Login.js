@@ -25,17 +25,17 @@ function Login(props) {
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
       <Form onFinish={onFinish}>
         <Form.Item
-          label="Username"
+          label="Email"
           name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          rules={[{ required: true, message: "Introduceti adresa de email!" }]}
         >
           <Input disabled={loading} />
         </Form.Item>
 
         <Form.Item
-          label="Password"
+          label="Parola"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[{ required: true, message: "Introduceti parola!" }]}
         >
           <Input.Password disabled={loading} />
         </Form.Item>
@@ -46,6 +46,7 @@ function Login(props) {
           </Button>
         </Form.Item>
       </Form>
+      <Button type="link" onClick={() => navigate("/reset-password")}>Resetare parola</Button>
     </div>
   );
 }

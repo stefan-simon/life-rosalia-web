@@ -1,0 +1,32 @@
+.application {
+  text-align: left;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.container > div {
+  flex-basis: 48%;
+}
+
+.description p {
+  text-align: justify;
+}
+
+.app-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+}

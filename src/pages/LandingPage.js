@@ -3,8 +3,12 @@ import { Layout, Menu } from "antd";
 import Sightings from "./Sightings";
 import Maps from "./Maps";
 import Login from "./Login";
-import { isAuthenticated } from "../utils";
+import { isAuthenticated, isAdmin } from "../utils";
 import { useEffect, useState } from "react";
+import UsersList from "./UsersList";
+import ResetPassword from "./ResetPassword";
+import SetPassword from "./SetPassword";
+import Application from "./Application";
 
 const { Header, Content } = Layout;
 
@@ -30,14 +34,19 @@ function LandingPage() {
             mode="horizontal"
             selectedKeys={[]}
           >
+            <Menu.Item key="application">
+              <Link to="/">Despre Aplicatie</Link>
+            </Menu.Item>
             {authenticated ? (
               <>
                 <Menu.Item key="sightings">
-                  <Link to="/">Inregistrari</Link>
+                  <Link to="/sightings">Inregistrari</Link>
                 </Menu.Item>
-                <Menu.Item key="maps">
-                  <Link to="/maps">Harta</Link>
-                </Menu.Item>
+                {isAdmin() && (
+                  <Menu.Item key="users">
+                    <Link to="/users">Utilizatori</Link>
+                  </Menu.Item>
+                )}
                 <Menu.Item key="logout" style={{ float: "right" }}>
                   <Link to="/logout">Logout</Link>
                 </Menu.Item>
@@ -53,7 +62,7 @@ function LandingPage() {
           <div className="site-layout-content">
             <Routes>
               <Route
-                path="/"
+                path="/sightings"
                 element={
                   authenticated ? (
                     <Sightings />
@@ -72,8 +81,21 @@ function LandingPage() {
                   )
                 }
               />
+              <Route
+                path="/users"
+                element={
+                  isAdmin() ? (
+                    <UsersList />
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
               <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
               <Route path="/logout" element={<Logout setAuthenticated={setAuthenticated} />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/set-password" element={<SetPassword />} />
+              <Route path="/" element={<Application />} />
             </Routes>
           </div>
         </Content>

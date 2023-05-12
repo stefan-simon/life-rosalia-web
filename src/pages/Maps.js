@@ -203,7 +203,13 @@ const Maps = () => {
               onChange={(e) => setUseCluster(e.target.checked)}
             >Grupeaza observatiile</Checkbox>
           </div>
-          <SightingsList sightings={sightingsInViewport} onDetailsClick={(record) => { setSelectedRecord(record); setDetailsModalVisible(true) }} onValidateClick={() => { }} onRowClick={handleOnRowClick} />
+          <SightingsList
+            displayActions={false}
+            sightings={sightingsInViewport}
+            onDetailsClick={(record) => { setSelectedRecord(record); setDetailsModalVisible(true) }}
+            onRowClick={handleOnRowClick}
+            onValidateClick={() => { }}
+          />
         </div>
       </Drawer>
       <SightingDetails record={selectedRecord} visible={detailsModalVisible} onClose={() => setDetailsModalVisible(false)} />

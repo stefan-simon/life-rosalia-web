@@ -3,9 +3,9 @@ import { Table, Button, Tag, Space, Tooltip } from "antd";
 import { InfoCircleOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import moment from 'moment';
-import { speciesNames } from "../utils";
+import { isAdmin, speciesNames } from "../utils";
 
-function SightingsList({ hasFilter = false, sightings = [], onDetailsClick, onValidateClick, onDeleteClick = () => { }, onRowClick = () => { } }) {
+function SightingsList({ displayActions=true, hasFilter = false, sightings = [], onDetailsClick, onValidateClick, onDeleteClick = () => { }, onRowClick = () => { } }) {
 
   const columns = [
     {
@@ -72,12 +72,16 @@ function SightingsList({ hasFilter = false, sightings = [], onDetailsClick, onVa
             <Tooltip title="Detalii">
               <Button type="default" onClick={() => onDetailsClick(record)} icon={<InfoCircleOutlined />} />
             </Tooltip>
-            <Tooltip title={record.verified ? "Invalideaza" : "Valideaza"}>
-              <Button onClick={() => onValidateClick(record)} type={record.verified ? "default" : "primary"} danger={record.verified} icon={record.verified ? <CloseCircleOutlined /> : <CheckCircleOutlined />} />
-            </Tooltip>
-            <Tooltip title="Sterge">
-              <Button danger onClick={() => onDeleteClick(record)} type="primary" icon={<DeleteOutlined />} />
-            </Tooltip>
+            {displayActions && isAdmin() && (
+              <>
+                <Tooltip title={record.verified ? "Invalideaza" : "Valideaza"}>
+                  <Button onClick={() => onValidateClick(record)} type={record.verified ? "default" : "primary"} danger={record.verified} icon={record.verified ? <CloseCircleOutlined /> : <CheckCircleOutlined />} />
+                </Tooltip>
+                <Tooltip title="Sterge">
+                  <Button danger onClick={() => onDeleteClick(record)} type="primary" icon={<DeleteOutlined />} />
+                </Tooltip>
+              </>
+            )}
           </Space>
         </>
       ),
