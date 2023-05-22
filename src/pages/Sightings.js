@@ -7,7 +7,7 @@ import { apiUrl } from "../appConfig";
 import SightingsList from "../Components/SightingsList";
 import SightingDetails from "../Components/SightingDetails";
 import FilterPanel from "../Components/FiltrePanel";
-import { isValidator, speciesIds } from "../utils";
+import { isTokenExpired, isValidator, speciesIds } from "../utils";
 import { Button, message } from "antd";
 
 function Sightings() {
@@ -24,6 +24,14 @@ function Sightings() {
   // fetch the sightings and the users list
   useEffect(() => {
     const token = localStorage.getItem("rosalia-web-token");
+
+    // Redirect to "/login" if user is not logged in or token has expired
+    if (isTokenExpired()) {
+      navigate("/login");
+      return;
+    }
+
+
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     };

@@ -28,6 +28,17 @@ export const isAdmin = () => {
   return decodedToken.role === "admin";
 }
 
+export const isTokenExpired = () => {
+  const token = localStorage.getItem("rosalia-web-token");
+  if (!token) {
+    return true;
+  }
+
+  const decodedToken = jwt_decode(token);
+  const currentTime = Date.now() / 1000;
+  return decodedToken.exp < currentTime;
+}
+
 export const isValidator = () => {
   const token = localStorage.getItem("rosalia-web-token");
   if (!token) {
