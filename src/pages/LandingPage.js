@@ -45,7 +45,7 @@ function LandingPage() {
                   </Menu.Item>
                 )}
                 <Menu.Item key="application">
-                  <a href="https:/www.liferosalia.ro/aplicatie" target="_blank" rel="noopener noreferrer">
+                  <a href="https://www.liferosalia.ro/aplicatie" target="_blank" rel="noopener noreferrer">
                     Despre Aplicatie
                   </a>
                 </Menu.Item>
