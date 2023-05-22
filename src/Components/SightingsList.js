@@ -3,7 +3,7 @@ import { Table, Button, Tag, Space, Tooltip } from "antd";
 import { InfoCircleOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import moment from 'moment';
-import { isAdmin, speciesNames } from "../utils";
+import { isValidator, speciesNames } from "../utils";
 
 function SightingsList({ displayActions=true, hasFilter = false, sightings = [], onDetailsClick, onValidateClick, onDeleteClick = () => { }, onRowClick = () => { } }) {
 
@@ -72,7 +72,7 @@ function SightingsList({ displayActions=true, hasFilter = false, sightings = [],
             <Tooltip title="Detalii">
               <Button type="default" onClick={() => onDetailsClick(record)} icon={<InfoCircleOutlined />} />
             </Tooltip>
-            {displayActions && isAdmin() && (
+            {displayActions && isValidator() && (
               <>
                 <Tooltip title={record.verified ? "Invalideaza" : "Valideaza"}>
                   <Button onClick={() => onValidateClick(record)} type={record.verified ? "default" : "primary"} danger={record.verified} icon={record.verified ? <CloseCircleOutlined /> : <CheckCircleOutlined />} />

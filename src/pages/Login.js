@@ -15,9 +15,9 @@ function Login(props) {
     if (token) {
       localStorage.setItem("rosalia-web-token", token);
       props.setAuthenticated(true);
-      navigate("/");
+      navigate("/sightings");
     } else {
-      message.error("Invalid username or password");
+      message.error("Eroare la logare. Utilizator inexistent, inactiv sau parola este gresita");
     }
   };
 

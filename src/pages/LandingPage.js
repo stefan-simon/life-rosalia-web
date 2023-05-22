@@ -34,9 +34,6 @@ function LandingPage() {
             mode="horizontal"
             selectedKeys={[]}
           >
-            <Menu.Item key="application">
-              <Link to="/">Despre Aplicatie</Link>
-            </Menu.Item>
             {authenticated ? (
               <>
                 <Menu.Item key="sightings">
@@ -47,6 +44,11 @@ function LandingPage() {
                     <Link to="/users">Utilizatori</Link>
                   </Menu.Item>
                 )}
+                <Menu.Item key="application">
+                  <a href="https:/www.liferosalia.ro/aplicatie" target="_blank" rel="noopener noreferrer">
+                    Despre Aplicatie
+                  </a>
+                </Menu.Item>
                 <Menu.Item key="logout" style={{ float: "right" }}>
                   <Link to="/logout">Logout</Link>
                 </Menu.Item>
@@ -95,7 +97,8 @@ function LandingPage() {
               <Route path="/logout" element={<Logout setAuthenticated={setAuthenticated} />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/set-password" element={<SetPassword />} />
-              <Route path="/" element={<Application />} />
+              <Route path="/application" element={<Application />} />
+              <Route path="/" element={<Sightings />} />
             </Routes>
           </div>
         </Content>

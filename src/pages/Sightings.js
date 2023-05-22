@@ -7,7 +7,7 @@ import { apiUrl } from "../appConfig";
 import SightingsList from "../Components/SightingsList";
 import SightingDetails from "../Components/SightingDetails";
 import FilterPanel from "../Components/FiltrePanel";
-import { isAdmin, speciesIds } from "../utils";
+import { isValidator, speciesIds } from "../utils";
 import { Button, message } from "antd";
 
 function Sightings() {
@@ -39,7 +39,7 @@ function Sightings() {
 
     fetchUsers();
 
-    const sightingsAPI = isAdmin() ? "/all-sightings" : "/sightings";
+    const sightingsAPI = isValidator() ? "/all-sightings" : "/sightings";
 
     axios
       .get(apiUrl + sightingsAPI, config)
@@ -53,7 +53,6 @@ function Sightings() {
   }, []);
 
   const handleApplyFilters = (selectedSpecies, selectedUsers, verified, intervalDate) => {
-    console.log(selectedSpecies, selectedUsers, verified, intervalDate);
     let filteredSightings = sightings;
 
     if (selectedSpecies.length > 0) {
