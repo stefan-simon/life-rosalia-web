@@ -17,14 +17,18 @@ const ResetPassword = () => {
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-    <Space direction="vertical">
-      <h2>Resetare / Schimbare parola</h2>
-      <Input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Button onClick={handleResetPassword}>Trimite</Button>
+      <Space direction="vertical">
+        <h2>Resetare / Schimbare parola</h2>
+        <p>
+          Introduceti adresa de email cu care v-ati inregistrat.<br />
+          Veti primi un email cu instructiuni pentru resetarea parolei.
+        </p>
+        <Input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button onClick={handleResetPassword}>Trimite</Button>
       </Space>
     </div>
   );
